@@ -20,9 +20,9 @@ class Server:
         df = pd.DataFrame({'time': time, 'val': val})
         return df
 
-    def post_data(self, mrid, telpoint, purposeKey, value):
+    def post_data(self, element, mrid, telpoint, purposeKey, value):
         url = f'http://{self.ip}:{self.port}/api/values'
-        path = f'/energyStoragingUnit[MRID=\"{mrid}\"]/{telpoint}'
+        path = f'/{element}[MRID=\"{mrid}\"]/{telpoint}'
         req = requests.post(url, json={"path": path,
                                        "purposeKey": purposeKey, "value": value})
         print(req)

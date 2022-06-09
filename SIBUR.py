@@ -32,10 +32,9 @@ charge_number = ESS_params.charge_number(ess_df_p)
 # Расчёт запасённой энергии СЭС
 energy_safe = ESS_params.save_pvs(ess_df_p, pvs_p, grid_p, Grid_1['p_grid_delta'])
 
-# Загрузка данных в
-Amigo.post_data(ESS_1['mrid'], 'status', 'TM1D', eff_factor)
-Amigo.post_data(ESS_1['mrid'], 'chargeNumber', 'DT1D', eff_factor)
-Amigo.post_data(PVS_1['mrid'], 'chargeNumber', 'DT1D', eff_factor)
+# Загрузка данных в Амиго
+Amigo.post_data('energyStoragingUnit', ESS_1['mrid'], 'status', 'TM1D', eff_factor)
+Amigo.post_data('energyStoragingUnit', ESS_1['mrid'], 'chargeNumber', 'DT1D', charge_number)
+Amigo.post_data('generatingUnit', PVS_1['mrid'], 'e', 'AB1D', energy_safe)
 
-# print(charge_number)
 
