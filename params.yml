@@ -1,0 +1,20 @@
+Amigo_web_server:
+  ip_address: "192.168.10.54"
+  port: "80"
+  # usr: "amigo"
+  # pass: "m&ms7_"
+
+ESS_s:
+  ESS_1:
+    mrid: "_ESS_01"
+    p_nom: 18
+    e_nom: 20
+
+PVS_s:
+  PVS_1:
+    mrid: "_PVS_01"
+
+Grid_s:
+  Grid_1:
+    mrid: "_EXG_01"
+    p_grid_delta: 5
