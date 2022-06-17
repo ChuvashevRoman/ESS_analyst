@@ -20,6 +20,7 @@ class Server:
         df = pd.DataFrame({'time': time, 'val': val})
         return df
 
+    # Передача данных на сервер
     def post_data(self, element, mrid, telpoint, purposeKey, value):
         url = f'http://{self.ip}:{self.port}/api/values'
         path = f'/{element}[MRID=\"{mrid}\"]/{telpoint}'

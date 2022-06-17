@@ -23,7 +23,7 @@ class ESS_params:
 
         # Расчёт КПД = 1 - (Уровень энергоёмкости на начало интервала + Энергия потребляемая СНЭ) /
         # (Уровень энергоёмкости на конец интервала + Энергия выдаваемая в сеть)
-        eff_factor = 1 - (ess_e_end + discharge / 60) / \
+        eff_factor = (ess_e_end + discharge / 60) / \
                      (ess_e_start + charge / 60)
 
         return eff_factor
