@@ -1,8 +1,11 @@
 Amigo_web_server:
   ip_address: "192.168.10.54"
-  port: "80"
-  # usr: "amigo"
-  # pass: "m&ms7_"
+  port: 80
+  port_mongo: 27017
+  port_ssh: 2212
+  usr_ssh: "amigo"
+  pass_ssh: "am1g0oN370v3"
+  Mongo_DB: "AMIGO_DB_SIBUR"
 
 ESS_s:
   ESS_1:

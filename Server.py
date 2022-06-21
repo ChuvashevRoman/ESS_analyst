@@ -1,7 +1,6 @@
 import requests
 import pandas as pd
 
-
 class Server:
 
     def __init__(self, ip_address, port):
@@ -18,6 +17,7 @@ class Server:
             val.append(float(item['value']))
             time.append(pd.Timestamp(item['timeStamp']))
         df = pd.DataFrame({'time': time, 'val': val})
+        print(req)
         return df
 
     # Передача данных на сервер
@@ -26,5 +26,12 @@ class Server:
         path = f'/{element}[MRID=\"{mrid}\"]/{telpoint}'
         req = requests.post(url, json={"path": path,
                                        "purposeKey": purposeKey, "value": value})
+        print(req)
+        print(req.request.body)
+
+    def post_data_with_time(self, element, mrid, telpoint, purposeKey, value, time):
+        url = f'http://{self.ip}:{self.port}/api/{element}/{mrid}/{telpoint}/row?purposeKey={purposeKey}'
+        timeStamp = time.strftime("%Y-%m-%dT%H:%M:%S.000+03:00[Europe/Moscow]")
+        req = requests.post(url, json=[{"timeStamp": timeStamp, "measurementValueQuality":{"validity":"GOOD","source":"PROCESS"}, "value": value}])
         print(req)
         print(req.request.body)
