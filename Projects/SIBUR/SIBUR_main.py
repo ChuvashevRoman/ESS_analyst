@@ -24,7 +24,7 @@ Grid_1 = params['Grid_s']['Grid_1']
 
 def update_data():
     now = datetime.datetime.now()
-    if now.minute == 0:
+    if now.minute % 1 == 0:
         print(">>> Расчёт запасённой энергии СЭС")
         try:
             ess_df_p = Amigo.get_data('energyStoragingUnit', ESS_1['mrid'], 'p', 'TM1M', 'PT-61M', 'now')
@@ -43,14 +43,15 @@ def update_data():
         # Загрузка данных в Амиго
         try:
             timeStamp = datetime.datetime(now.year, now.month, now.day, now.hour - 1)
-            Amigo.post_data_with_time('generatingUnit', PVS_1['mrid'], 'e', 'AB1H', energy_safe, timeStamp)
+            # Amigo.post_data_with_time('generatingUnit', PVS_1['mrid'], 'e', 'AB1H', energy_safe, timeStamp)
         except:
             print(">>> Данные не отправлены")
 
-        if now.hour == 0:
+        if now.hour % 1 == 0:
             print(">>> Расчёт КПД и количества циклов")
             try:
                 ess_df_p = Amigo.get_data('energyStoragingUnit', ESS_1['mrid'], 'p', 'TM1M', 'P-1D', 'now')
+                print(ess_df_p)
                 ess_df_e = Amigo.get_data('energyStoragingUnit', ESS_1['mrid'], 'e', 'TM1M', 'P-1D', 'now')
             except:
                 print(">>> Данные не выгружены")
@@ -72,8 +73,8 @@ def update_data():
             # Загрузка данных в Амиго
             try:
                 timeStamp = datetime.datetime(now.year, now.month, now.day - 1)
-                Amigo.post_data_with_time('energyStoragingUnit', ESS_1['mrid'], 'chargeNumber', 'DT1D', charge_number, timeStamp)
-                Amigo.post_data_with_time('energyStoragingUnit', ESS_1['mrid'], 'status', 'TM1D', eff_factor, timeStamp)
+                # Amigo.post_data_with_time('energyStoragingUnit', ESS_1['mrid'], 'chargeNumber', 'DT1D', charge_number, timeStamp)
+                # Amigo.post_data_with_time('energyStoragingUnit', ESS_1['mrid'], 'status', 'TM1D', eff_factor, timeStamp)
             except:
                 print("Данные не отправлены")
     time.sleep(60)
@@ -81,6 +82,24 @@ def update_data():
 
 if __name__ == "__main__":
     print(">>> Программа расчёта показателей СНЭЭ запущена")
+    ess_df_p = Amigo.get_data('energyStoragingUnit', ESS_1['mrid'], 'p', 'TM1M', 'P-1D', 'now')
+    ess_df_e = Amigo.get_data('energyStoragingUnit', ESS_1['mrid'], 'e', 'TM1M', 'P-1D', 'now')
+    pvs_p = Amigo.get_data('generatingUnit', PVS_1['mrid'], 'p', 'TM1M', 'P-1D', 'now')
+    grid_p = Amigo.get_data('externalGrid', Grid_1['mrid'], 'p', 'TM1M', 'P-1D', 'now')
 
-    while True:
-        update_data()
+    eff_factor = ESS_params.eff_factor(ess_df_p, ess_df_e)
+    print(f">>> КПД Накопителя: {eff_factor}")
+
+    charge_number = ESS_params.charge_number(ess_df_p)
+    print(f">>> Количество циклов: {charge_number}")
+
+    energy_safe = ESS_params.save_pvs(ess_df_p, pvs_p, grid_p, Grid_1['p_grid_delta'])
+    print(f">>> Запасённая энергия СЭС: {energy_safe}")
+
+    mean_power = ESS_params.mean_power(ess_df_p)
+    print(f">>> Средняя мощность накопителя: {mean_power}")
+
+
+
+    # while True:
+    #     update_data()
